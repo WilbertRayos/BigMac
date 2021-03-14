@@ -3,7 +3,7 @@ import os
 from tkinter import Tk, Frame, Label, Entry, StringVar
 
 class MainWindow(Frame):
-    FONT_SIZE = 24
+    FONT_SIZE = 20
     FONT_FAMILY = "Consolas"
 
     my_hostName = ""
@@ -14,9 +14,9 @@ class MainWindow(Frame):
         super().__init__(master)
         self.master = master
         self.master.title("Big MAC")
+        self.master.resizable(False, False)
         self.widgets()
         self.modify_text_design()
-        self.grid()
 
     def widgets(self):
         ''' Host Name '''
@@ -68,39 +68,45 @@ class MainWindow(Frame):
                 item.config(bg="pink")
             elif item.winfo_class() == "Entry":
                 item.configure(state="readonly")
-    
-
 
     @staticmethod
     def get_host_name():
         try:
-            if sys.platform == 'win32': 
+            if sys.platform == 'win32':
                 for line in os.popen("ipconfig /all"):
                     if line.lstrip().startswith('Host Name'):
                         hostname = line.split(':')[1].strip()
                         break
         except Exception as e:
-            return "Error"
-        else:   
-            return hostname    
+            return f"Error: {e}"
+        else:
+            return hostname
 
     @staticmethod
     def get_ip_address():
-        if sys.platform == 'win32':
-            for line in os.popen("ipconfig"):
-                if line.lstrip().startswith("IPv4 Address"):
-                    ipaddress = line.split(':')[1].strip().replace('-',':')
-                    break
-        return ipaddress
+        try:
+            if sys.platform == 'win32':
+                for line in os.popen("ipconfig"):
+                    if line.lstrip().startswith("IPv4 Address"):
+                        ipaddress = line.split(':')[1].strip().replace('-',':')
+                        break
+        except Exception as e:
+            return f"Error: {e}"
+        else:
+            return ipaddress
 
     @staticmethod
-    def get_mac_address(): 
-        if sys.platform == 'win32': 
-            for line in os.popen("ipconfig /all"):
-                if line.lstrip().startswith('Physical Address'): 
-                    mac = line.split(':')[1].strip().replace('-',':') 
-                    break 
-        return mac 
+    def get_mac_address():
+        try:
+            if sys.platform == 'win32':
+                for line in os.popen("ipconfig /all"):
+                    if line.lstrip().startswith('Physical Address'):
+                        mac = line.split(':')[1].strip().replace('-',':')
+                        break
+        except Exception as e:
+            return f"Error: {e}"
+        else:
+            return mac
 
 
 if __name__ == "__main__":
